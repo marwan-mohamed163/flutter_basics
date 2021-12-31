@@ -9,7 +9,8 @@ class AddTodoBottomSheet extends StatefulWidget{
 class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
   String title='';
   String content='';
-  DateTime date=DateTime.now();
+  DateTime? date=null;
+  bool titleError=false,contentError=false,dateError=false;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,17 +22,31 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
           child: Text('Add Todo',),
         ),
         TextField(
-          decoration: InputDecoration(labelText: 'Title'),
+          decoration: InputDecoration(
+              errorText:titleError?'Please enter a title':null,
+              labelText: 'Title'),
           onChanged: (newText){
             title=newText;
+            if(newText.isNotEmpty){
+              setState(() {
+                titleError=false;
+              });
+            }
           },
         ),
         TextField(
           minLines: 4,
           maxLines: 4,
-          decoration: InputDecoration(labelText: 'content'),
+          decoration: InputDecoration(
+              errorText:contentError?'Please enter content':null,
+              labelText: 'content'),
           onChanged: (newText){
             content=newText;
+            if(newText.isNotEmpty){
+              setState(() {
+                contentError=false;
+              });
+            }
           },
         ),
         InkWell(
@@ -40,9 +55,12 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
           },
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child:date==null?
-            Text('Select date',textAlign:TextAlign.start,):
-            Text('${date.year} / ${date.month} / ${date.day}'),
+            child: date==null?
+                   Text(dateError?'No date selected':'Select date',
+                     style:TextStyle(color: dateError?Colors.red:Colors.black),
+                   ):
+                   Text('selectd date :${date!.year}-${date!.month}-${date!.day}',
+                   ),
           ),
         ),
         ElevatedButton(onPressed:(){
@@ -54,17 +72,39 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
     );
   }
   void addTodoItem()async{
-    Todo todo =Todo(title: title, content: content, dateTime: date);
+    if(!valid()) return;
+    Todo todo =Todo(title: title, content: content, dateTime: date!);
     var box =await Hive.openBox<Todo>(Todo.BOX_NAME);
     box.add(todo);
     //to dismiss this widget page
     Navigator.pop(context);
+  }
+  bool valid(){
+   bool valid=true;
+   if(title.isEmpty){
+     setState(() {
+       titleError=true;
+     });
+   }
+   if(content.isEmpty){
+     setState(() {
+       contentError=true;
+     });
+   }
+   if(date==null){
+     setState(() {
+       dateError=true;
+     });
+   }
+   return valid;
   }
   void choosenDateForTodo()async{
     var choosedate = await showDatePicker(
          initialDate:DateTime.now(),
          firstDate: DateTime.now(),
          lastDate: DateTime.now().add(const Duration(days: 365)), context:context);
-         date = choosedate! ;
+    this.setState(() {
+      date = choosedate ;
+    });
   }
 }
