@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_app/ui/HomeScreen.dart';
 import 'package:to_do_app/ui/home/dataBase/MyDataBase.dart';
+import 'package:to_do_app/ui/home/editTodo/EditTodo.dart';
 
 
 void main() {
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         HomeScreen.ROUTE_NAME:(context)=>HomeScreen(),
+        EditTodo.ROUTE_NAME:(context)=>EditTodo(),
       },
       initialRoute:HomeScreen.ROUTE_NAME ,
     );

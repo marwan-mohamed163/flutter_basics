@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:to_do_app/main.dart';
 import 'package:to_do_app/ui/home/dataBase/model/Todo.dart';
+import 'package:to_do_app/ui/home/editTodo/EditTodo.dart';
 import 'package:to_do_app/ui/home/list/TodoItem.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -65,7 +68,7 @@ class _ListFragmentState extends State<ListFragment> {
                 child:todosList.length >0 ?
                 ListView.builder(   itemCount: todosList.length,
                 itemBuilder: (context, index) {
-                return TodoItem(todosList[index],onDeleteItem,onCheckItem);
+                return TodoItem(todosList[index],onDeleteItem,onCheckItem,onItemPressed);
               }):
                     Center(
                       child: Text('No todos for this day'),
@@ -84,6 +87,7 @@ class _ListFragmentState extends State<ListFragment> {
     box.deleteAt(index);
     getTodoFormBox();
   }
+
   void onCheckItem(Todo item)async{
     print('item before change its sate ${item.isDone}');
     var box = await Hive.openBox<Todo>(Todo.BOX_NAME);
@@ -92,6 +96,12 @@ class _ListFragmentState extends State<ListFragment> {
     box.putAt(index, item);
     print(box.values.toList().elementAt(index).isDone);
     getTodoFormBox();
+  }
+
+  void onItemPressed(Todo item,BuildContext context)async{
+    var box = await Hive.openBox<Todo>(Todo.BOX_NAME);
+    box.close();
+    Navigator.of(context).pushNamed(EditTodo.ROUTE_NAME,arguments:item);
   }
 
   @override

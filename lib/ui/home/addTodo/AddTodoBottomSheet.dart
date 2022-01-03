@@ -84,27 +84,33 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
    if(title.isEmpty){
      setState(() {
        titleError=true;
+       valid =false;
      });
    }
    if(content.isEmpty){
      setState(() {
        contentError=true;
+       valid =false;
      });
    }
    if(date==null){
      setState(() {
        dateError=true;
+       valid =false;
      });
    }
    return valid;
   }
   void choosenDateForTodo()async{
-    var choosedate = await showDatePicker(
+    var chooseDate = await showDatePicker(
          initialDate:DateTime.now(),
          firstDate: DateTime.now(),
          lastDate: DateTime.now().add(const Duration(days: 365)), context:context);
     this.setState(() {
-      date = choosedate ;
+      date = chooseDate ;
+      if(dateError!=null){
+        dateError=false;
+      }
     });
   }
 }
