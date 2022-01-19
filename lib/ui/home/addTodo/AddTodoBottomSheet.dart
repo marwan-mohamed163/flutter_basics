@@ -106,8 +106,8 @@ class _AddTodoBottomSheetState extends State<AddTodoBottomSheet> {
          initialDate:DateTime.now(),
          firstDate: DateTime.now(),
          lastDate: DateTime.now().add(const Duration(days: 365)), context:context);
+    date = chooseDate ;
     this.setState(() {
-      date = chooseDate ;
       if(dateError!=null){
         dateError=false;
       }

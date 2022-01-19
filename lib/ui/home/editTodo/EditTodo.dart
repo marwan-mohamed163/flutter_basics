@@ -182,8 +182,8 @@ class _EditTodoState extends State<EditTodo> {
         initialDate: DateTime.now(),
         firstDate: DateTime.now(),
         lastDate: DateTime.now().add(Duration(days: 365)),context: context);
+    date=chooseDate;
     setState(() {
-      date=chooseDate;
       if(dateError!=null){
         dateError=false;
       }

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -26,7 +24,6 @@ class _ListFragmentState extends State<ListFragment> {
         getTodoFormBox();
       },
       child: Container(
-        color: MyThemeData.accentColor,
         child: Column(
           children: [
             TableCalendar(
@@ -65,7 +62,7 @@ class _ListFragmentState extends State<ListFragment> {
               weekendDays: [],
             ),
             Expanded(
-                child:todosList.length >0 ?
+                child:todosList.isNotEmpty ?
                 ListView.builder(   itemCount: todosList.length,
                 itemBuilder: (context, index) {
                 return TodoItem(todosList[index],onDeleteItem,onCheckItem,onItemPressed);
@@ -81,7 +78,6 @@ class _ListFragmentState extends State<ListFragment> {
   }
 
   void onDeleteItem(Todo item)async{
-    print(item.title);
     var box =await Hive.openBox<Todo>(Todo.BOX_NAME);
     int index = box.values.toList().indexOf(item);
     box.deleteAt(index);
@@ -89,12 +85,10 @@ class _ListFragmentState extends State<ListFragment> {
   }
 
   void onCheckItem(Todo item)async{
-    print('item before change its sate ${item.isDone}');
     var box = await Hive.openBox<Todo>(Todo.BOX_NAME);
     int index = box.values.toList().indexOf(item);
     item.isDone = item.isDone?false:true;
     box.putAt(index, item);
-    print(box.values.toList().elementAt(index).isDone);
     getTodoFormBox();
   }
 
@@ -106,7 +100,6 @@ class _ListFragmentState extends State<ListFragment> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getTodoFormBox();
   }
